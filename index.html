@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07111d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>J.A.R.V.I.S</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07111d;--pn:#0e1b2c;--ln:#1c3550;--tx:#dcecf7;--dim:#7c97ad;--ac:#3fe0ff;--am:#ffb454;--er:#ff7a7a;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font:16px/1.5 'Exo 2',system-ui,sans-serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--ln)}
+h1{margin:0;font-size:18px;font-weight:600;letter-spacing:.18em;color:var(--ac)}
+.ib{background:none;border:1px solid var(--ln);color:var(--tx);border-radius:10px;width:42px;height:42px;font-size:18px;cursor:pointer;margin-left:8px}
+.ib:focus-visible,#orb:focus-visible,#in:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.ib.off{opacity:.45}
+#log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:86%;padding:10px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.u{align-self:flex-end;background:#12385a;border-bottom-right-radius:4px}
+.a{align-self:flex-start;background:var(--pn);border:1px solid var(--ln);border-bottom-left-radius:4px}
+.a small{display:block;margin-top:6px;color:var(--dim);font-size:12px}
+.e{align-self:center;max-width:94%;color:var(--er);font-size:14px;text-align:center}
+.hi{margin:auto;text-align:center;color:var(--dim);max-width:280px}
+footer{padding:10px 14px 14px;border-top:1px solid var(--ln);display:flex;flex-direction:column;align-items:center;gap:12px}
+#orb{width:76px;height:76px;border-radius:50%;border:2px solid var(--ac);background:radial-gradient(circle,#3fe0ff33 0,#3fe0ff00 70%);color:var(--ac);font-size:28px;cursor:pointer;box-shadow:0 0 0 7px #3fe0ff14,0 0 0 15px #3fe0ff0a;transition:.2s}
+#orb.on{border-color:var(--am);color:var(--am);background:radial-gradient(circle,#ffb45444 0,#ffb45400 70%);animation:p 1.3s ease-in-out infinite}
+@keyframes p{50%{box-shadow:0 0 0 12px #ffb45422,0 0 0 24px #ffb4540d}}
+@media (prefers-reduced-motion:reduce){#orb.on{animation:none}}
+form{display:flex;gap:8px;width:100%}
+#in{flex:1;min-width:0;background:var(--pn);border:1px solid var(--ln);color:var(--tx);border-radius:12px;padding:12px;font:inherit}
+.go{background:var(--ac);color:var(--bg);border:0;border-radius:12px;padding:0 18px;font:inherit;font-weight:600;cursor:pointer}
+#cfg{position:fixed;inset:0;background:var(--bg);overflow-y:auto;padding:calc(16px + env(safe-area-inset-top)) 16px 24px;z-index:5}
+#cfg h2{font-size:17px;margin:0 0 6px}
+#cfg p{color:var(--dim);font-size:14px;margin:0 0 14px}
+#cfg a{color:var(--ac)}
+.row{background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:12px;margin-bottom:10px;display:grid;gap:8px}
+.row input[type=password],.row input[type=text]{width:100%;background:var(--bg);border:1px solid var(--ln);color:var(--tx);border-radius:8px;padding:10px;font:inherit;font-size:14px}
+.row label{display:flex;gap:8px;align-items:center}
+.bar{display:flex;gap:8px;margin-top:14px}
+.bar button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--tx);font:inherit;cursor:pointer}
+.bar .go{background:var(--ac);color:var(--bg);border:0}
+</style>
+</head>
+<body>
+<header>
+  <h1>J.A.R.V.I.S</h1>
+  <div><button class="ib" id="vz" title="Ligar ou desligar a voz do assistente" aria-label="Voz do assistente">🔊</button><button class="ib" id="gear" title="Configurar IAs" aria-label="Configurar IAs">⚙</button></div>
+</header>
+<main id="log"><div class="hi" id="hi">Toque no círculo e fale. Se ainda não configurou, abra a engrenagem e preencha o endereço do seu Worker.</div></main>
+<footer>
+  <button id="orb" aria-label="Falar com o assistente">🎙</button>
+  <form id="f"><input id="in" placeholder="Ou escreva aqui" autocomplete="off"><button class="go" type="submit">Enviar</button></form>
+</footer>
+
+<section id="cfg" hidden>
+  <h2>Cérebro do J.A.R.V.I.S</h2>
+  <p>As chaves das IAs ficam guardadas no seu Worker da Cloudflare, não neste aparelho. Aqui vão só o endereço do Worker e a senha do app.</p>
+  <div class="row">
+    <input type="text" id="cu" placeholder="https://jarvis.seu-usuario.workers.dev" autocapitalize="off" spellcheck="false">
+    <input type="password" id="ct" placeholder="Senha do app (TOKEN)" autocomplete="off">
+  </div>
+  <div class="bar"><button id="clr">Limpar conversa</button><button class="go" id="sv">Salvar</button></div>
+</section>
+
+<script>
+const SYS='Você é o J.A.R.V.I.S, assistente pessoal do usuário. Responda sempre em português do Brasil, de forma curta, clara e natural, como numa conversa falada. Não use markdown, listas nem emojis.';
+const $=s=>document.querySelector(s);
+const ls={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+let hist=ls.get('jv_hist',[]),voice=ls.get('jv_voice',true);
+const url=()=>String(ls.get('jv_url','')).replace(/\/+$/,''),tok=()=>String(ls.get('jv_tok',''));
+const orb=$('#orb');
+
+function add(c,t){
+  const h=$('#hi');if(h)h.remove();
+  const d=document.createElement('div');d.className='m '+c;d.textContent=t;
+  $('#log').append(d);d.scrollIntoView({block:'end'});return d;
+}
+hist.forEach(m=>add(m.role==='user'?'u':'a',m.content));
+if(!hist.length&&navigator.standalone)$('#hi').textContent+=' Se o microfone não gravar neste app da tela inicial, abra o link no Safari ou use o microfone do teclado.';
+
+function unlockTTS(){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);
+}
+function speak(t){
+  if(!voice||!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);u.lang='pt-BR';
+  const v=speechSynthesis.getVoices().find(v=>v.lang.replace('_','-')==='pt-BR');
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+
+async function ask(){
+  if(!url()||!tok())throw new Error('Falta configurar o cérebro. Toque na engrenagem e preencha o endereço do Worker e a senha.');
+  let r,j;
+  try{
+    r=await fetch(url()+'/chat',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok()},body:JSON.stringify({messages:[{role:'system',content:SYS},...hist.slice(-12)]})});
+    j=await r.json();
+  }catch(e){throw new Error('Não consegui falar com o Worker. Confira o endereço na engrenagem e a conexão.')}
+  if(!r.ok)throw new Error(j.error||'Erro '+r.status);
+  return {t:j.text,by:'Respondido por '+j.by};
+}
+
+async function send(text){
+  text=(text||'').trim();if(!text)return;
+  add('u',text);hist.push({role:'user',content:text});
+  const w=add('a','Pensando…');
+  try{
+    const {t,by}=await ask();
+    w.textContent=t;
+    const s=document.createElement('small');s.textContent=by;w.append(s);
+    hist.push({role:'assistant',content:t});hist=hist.slice(-40);ls.set('jv_hist',hist);
+    speak(t);
+  }catch(e){w.className='m e';w.textContent=e.message;hist.pop();}
+}
+$('#f').onsubmit=e=>{e.preventDefault();unlockTTS();const i=$('#in');const t=i.value;i.value='';send(t)};
+
+/* Voz: grava no aparelho e o Worker transcreve (Whisper). Se não der, tenta o reconhecimento do navegador. */
+let mr=null,rec=null,stream=null,chunks=[];
+const mime=()=>window.MediaRecorder&&['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+
+async function recStart(){
+  const mt=mime();if(!mt||!navigator.mediaDevices)return false;
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}
+  catch(e){add('e','Microfone bloqueado. No iPhone: Ajustes, Safari, Microfone, e permita para este site.');return true}
+  chunks=[];mr=new MediaRecorder(stream,{mimeType:mt});
+  mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  mr.onstop=async()=>{
+    stream.getTracks().forEach(t=>t.stop());orb.classList.remove('on');mr=null;
+    const blob=new Blob(chunks,{type:mt});
+    if(blob.size<3000){add('e','Não ouvi nada. Toque, fale perto do microfone e toque de novo para enviar.');return}
+    const w=add('u','…');
+    try{
+      const fd=new FormData();fd.append('file',blob,'voz.'+(mt.includes('mp4')?'m4a':'webm'));
+      const r=await fetch(url()+'/stt',{method:'POST',headers:{Authorization:'Bearer '+tok()},body:fd});
+      const j=await r.json();w.remove();
+      if(!r.ok)throw new Error(j.error||'erro '+r.status);
+      send(j.text);
+    }catch(e){w.remove();add('e','Transcrição falhou: '+e.message+'. Use o microfone do teclado como alternativa.')}
+  };
+  mr.start(1000);orb.classList.add('on');
+  setTimeout(()=>{if(mr&&mr.state==='recording')mr.stop()},30000);
+  return true;
+}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function srStart(){
+  if(!SR){add('e','Este navegador não grava nem reconhece voz aqui. Use o microfone do teclado.');return}
+  rec=new SR();rec.lang='pt-BR';rec.interimResults=false;
+  rec.onstart=()=>orb.classList.add('on');
+  rec.onresult=e=>send(e.results[0][0].transcript);
+  rec.onerror=e=>add('e','Não consegui ouvir ('+e.error+'). Use o microfone do teclado como alternativa.');
+  rec.onend=()=>{rec=null;orb.classList.remove('on')};
+  rec.start();
+}
+orb.onclick=async()=>{
+  if(mr&&mr.state==='recording'){mr.stop();return}
+  if(rec){rec.stop();return}
+  unlockTTS();
+  if(url()&&tok()&&await recStart())return;
+  srStart();
+};
+
+function vzDraw(){$('#vz').classList.toggle('off',!voice);$('#vz').textContent=voice?'🔊':'🔇'}
+$('#vz').onclick=()=>{voice=!voice;ls.set('jv_voice',voice);if(!voice&&'speechSynthesis' in window)speechSynthesis.cancel();vzDraw()};
+vzDraw();
+
+$('#gear').onclick=()=>{$('#cu').value=url();$('#ct').value=tok();$('#cfg').hidden=false};
+$('#sv').onclick=()=>{ls.set('jv_url',$('#cu').value.trim());ls.set('jv_tok',$('#ct').value.trim());$('#cfg').hidden=true};
+$('#clr').onclick=()=>{hist=[];ls.set('jv_hist',hist);$('#log').innerHTML='';$('#cfg').hidden=true};
+</script>
+</body>
+</html>
